@@ -105,6 +105,16 @@ function Dashboard() {
     setActivating(true);
   };
 
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
+  useEffect(() => {
+    if (search.activate === 1 && !profile?.reviews_active) {
+      activate();
+      navigate({ search: {} as any, replace: true });
+    }
+  }, [search.activate, profile?.reviews_active, navigate]);
+
+
   const closeModal = () => {
     setActivating(false);
     setStepIdx(0);
