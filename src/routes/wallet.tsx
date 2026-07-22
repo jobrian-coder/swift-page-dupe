@@ -8,9 +8,9 @@ export const Route = createFileRoute("/wallet")({
   head: () => ({
     meta: [
       { title: "Wallet — RatePay" },
-      { name: "description", content: "Track your balance and withdraw once you hit $20." },
+      { name: "description", content: "Track your balance and withdraw once you reach $20.00." },
       { property: "og:title", content: "Wallet — RatePay" },
-      { property: "og:description", content: "Track your balance and withdraw once you hit $20." },
+      { property: "og:description", content: "Track your balance and withdraw once you reach $20.00." },
     ],
   }),
   component: () => (
@@ -20,11 +20,18 @@ export const Route = createFileRoute("/wallet")({
   ),
 });
 
+const METHODS = [
+  { id: "M-Pesa", label: "M-Pesa (default)", placeholder: "07XXXXXXXX or 2547XXXXXXXX", hint: "Enter the phone number that will receive M-Pesa." },
+  { id: "PayPal", label: "PayPal", placeholder: "PayPal email", hint: "We'll send the payout to this PayPal email." },
+  { id: "Bank", label: "Bank transfer", placeholder: "Account name, number & bank", hint: "Include account name, number and bank." },
+  { id: "Airtel Money", label: "Airtel Money", placeholder: "Airtel phone number", hint: "Enter your Airtel Money number." },
+];
+
 function Wallet() {
   const qc = useQueryClient();
-  const [method, setMethod] = useState("PayPal");
+  const [method, setMethod] = useState("M-Pesa");
   const [destination, setDestination] = useState("");
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState("20");
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState(false);
 
@@ -47,15 +54,18 @@ function Wallet() {
   });
 
   const balance = Number(profile?.balance ?? 0);
+  const earned = Number(profile?.earned ?? 0);
   const canWithdraw = balance >= 20;
+  const shortfall = Math.max(0, 20 - balance);
+  const active = METHODS.find((m) => m.id === method)!;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
     setOk(false);
     const a = parseFloat(amount);
-    if (!a || a < 20) return setErr("Minimum withdrawal is $20.");
-    if (a > balance) return setErr("Amount exceeds balance.");
+    if (!a || a < 20) return setErr("Minimum withdrawal is $20.00.");
+    if (a > balance) return setErr("Amount exceeds available balance.");
     if (!destination.trim()) return setErr("Enter your payout destination.");
     const { data: u } = await supabase.auth.getUser();
     const uid = u.user?.id!;
@@ -68,117 +78,140 @@ function Wallet() {
     if (error) return setErr(error.message);
     await supabase.from("profiles").update({ balance: balance - a }).eq("id", uid);
     setOk(true);
-    setAmount("");
+    setAmount("20");
     setDestination("");
     qc.invalidateQueries();
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <h1 className="text-3xl font-bold">Wallet</h1>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Wallet</h1>
+        <p className="text-muted-foreground text-sm">
+          Rewards land instantly. Withdraw when you reach $20.00.
+        </p>
+      </div>
 
-      <div
-        className="rounded-2xl p-6 text-center shadow-md"
-        style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
-      >
-        <div className="text-xs uppercase tracking-wider opacity-80">Available balance</div>
-        <div className="text-5xl font-bold my-1">${balance.toFixed(2)}</div>
-        <div className="text-sm opacity-80">
-          Earned lifetime: ${Number(profile?.earned ?? 0).toFixed(2)}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div
+          className="rounded-2xl p-6 shadow-md"
+          style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
+        >
+          <div className="text-xs uppercase tracking-wider opacity-80">Available balance</div>
+          <div className="text-5xl font-bold my-1">${balance.toFixed(2)}</div>
+          <div className="text-sm opacity-80">Minimum withdrawal: $20.00</div>
+        </div>
+        <div
+          className="rounded-2xl p-6 border"
+          style={{ background: "var(--card)" }}
+        >
+          <div className="text-xs uppercase tracking-wider text-muted-foreground">
+            Total earned
+          </div>
+          <div className="text-5xl font-bold my-1">${earned.toFixed(2)}</div>
+          <div className="text-sm text-muted-foreground">All-time review rewards</div>
         </div>
       </div>
 
-      <form
-        onSubmit={submit}
-        className="rounded-2xl border p-5 space-y-3"
-        style={{ background: "var(--card)" }}
-      >
-        <h2 className="font-bold text-lg">Withdraw</h2>
-        {!canWithdraw && (
-          <p className="text-sm text-muted-foreground">
-            You need at least $20 to withdraw. Keep reviewing!
-          </p>
-        )}
-        <div className="grid grid-cols-2 gap-2">
-          {["PayPal", "Venmo", "Cash App", "Bank"].map((m) => (
-            <button
-              key={m}
-              type="button"
-              onClick={() => setMethod(m)}
-              className="h-10 rounded-lg border text-sm font-semibold"
-              style={{
-                background: method === m ? "var(--brand)" : "transparent",
-                color: method === m ? "var(--brand-foreground)" : "var(--foreground)",
-                borderColor: method === m ? "var(--brand)" : "var(--border)",
-              }}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
-        <input
-          placeholder={
-            method === "Bank"
-              ? "Account details"
-              : method === "PayPal"
-                ? "PayPal email"
-                : `${method} handle`
-          }
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-          className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
-          disabled={!canWithdraw}
-        />
-        <input
-          type="number"
-          step="0.01"
-          min="20"
-          placeholder="Amount (min $20)"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
-          disabled={!canWithdraw}
-        />
-        {err && <p className="text-sm text-destructive">{err}</p>}
-        {ok && <p className="text-sm" style={{ color: "var(--brand)" }}>Withdrawal request submitted.</p>}
-        <button
-          disabled={!canWithdraw}
-          className="w-full h-11 rounded-full font-semibold shadow disabled:opacity-50"
-          style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
+      <div className="grid md:grid-cols-2 gap-4">
+        <form
+          onSubmit={submit}
+          className="rounded-2xl border p-6 space-y-4"
+          style={{ background: "var(--card)" }}
         >
-          Request withdrawal
-        </button>
-      </form>
+          <div>
+            <h2 className="font-bold text-2xl">Request withdrawal</h2>
+            <p className="text-sm text-muted-foreground">
+              Minimum $20.00. Funds arrive within <span className="font-semibold">24–48 hours</span> after approval.
+            </p>
+          </div>
 
-      <div>
-        <h2 className="font-bold text-lg mb-3">History</h2>
-        {(!withdrawals || withdrawals.length === 0) && (
-          <p className="text-sm text-muted-foreground">No withdrawals yet.</p>
-        )}
-        <div className="space-y-2">
-          {(withdrawals ?? []).map((w) => (
-            <div
-              key={w.id}
-              className="rounded-xl border p-3 flex items-center justify-between"
-              style={{ background: "var(--card)" }}
+          <label className="block">
+            <span className="text-sm font-semibold block mb-1.5">Amount (USD)</span>
+            <input
+              type="number"
+              step="0.01"
+              min="20"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
+              disabled={!canWithdraw}
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-semibold block mb-1.5">Payment method</span>
+            <select
+              value={method}
+              onChange={(e) => setMethod(e.target.value)}
+              className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
+              disabled={!canWithdraw}
             >
-              <div>
-                <div className="font-semibold">${Number(w.amount).toFixed(2)} · {w.method}</div>
-                <div className="text-xs text-muted-foreground">
-                  {w.destination} · {new Date(w.created_at).toLocaleDateString()}
+              {METHODS.map((m) => (
+                <option key={m.id} value={m.id}>{m.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-semibold block mb-1.5">
+              {method === "M-Pesa" ? "M-Pesa phone number" : method === "PayPal" ? "PayPal email" : method === "Bank" ? "Bank account details" : "Airtel phone number"}
+            </span>
+            <input
+              placeholder={active.placeholder}
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
+              disabled={!canWithdraw}
+            />
+            <span className="text-xs text-muted-foreground block mt-1">{active.hint}</span>
+          </label>
+
+          {err && <p className="text-sm text-destructive">{err}</p>}
+          {ok && <p className="text-sm" style={{ color: "var(--brand)" }}>Withdrawal request submitted.</p>}
+
+          <button
+            disabled={!canWithdraw}
+            className="w-full h-12 rounded-full font-semibold shadow disabled:opacity-60"
+            style={{
+              background: canWithdraw ? "var(--brand)" : "oklch(0.75 0.05 165)",
+              color: "var(--brand-foreground)",
+            }}
+          >
+            {canWithdraw ? "Request withdrawal" : `Need $${shortfall.toFixed(2)} more`}
+          </button>
+        </form>
+
+        <div
+          className="rounded-2xl border p-6"
+          style={{ background: "var(--card)" }}
+        >
+          <h2 className="font-bold text-2xl mb-3">Recent transactions</h2>
+          {(!withdrawals || withdrawals.length === 0) ? (
+            <p className="text-sm text-muted-foreground">No transactions yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {withdrawals.map((w) => (
+                <div
+                  key={w.id}
+                  className="rounded-xl border p-3 flex items-center justify-between"
+                >
+                  <div className="min-w-0">
+                    <div className="font-semibold">${Number(w.amount).toFixed(2)} · {w.method}</div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {w.destination} · {new Date(w.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <span
+                    className="text-xs font-bold px-2 py-1 rounded-full shrink-0"
+                    style={{ background: "var(--accent)", color: "var(--accent-foreground)" }}
+                  >
+                    {w.status}
+                  </span>
                 </div>
-              </div>
-              <span
-                className="text-xs font-bold px-2 py-1 rounded-full"
-                style={{
-                  background: "var(--accent)",
-                  color: "var(--accent-foreground)",
-                }}
-              >
-                {w.status}
-              </span>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>
