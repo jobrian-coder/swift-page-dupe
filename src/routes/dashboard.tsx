@@ -610,7 +610,7 @@ function CompanyCard({ c }: { c: any }) {
               className="text-[10px] font-bold px-2 py-0.5 rounded-full"
               style={{ background: "var(--accent)", color: "var(--accent-foreground)" }}
             >
-              Earn ${Number(c.payout).toFixed(2)}
+              Pays ${Number(c.payout).toFixed(2)}
             </span>
           </div>
           <div className="text-xs text-muted-foreground truncate">
