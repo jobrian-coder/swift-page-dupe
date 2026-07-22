@@ -13,12 +13,13 @@ export const Route = createFileRoute("/dashboard")({
   }),
   head: () => ({
     meta: [
-      { title: "Dashboard — RatePay" },
+      { title: "Dashboard — ReviewPay" },
       { name: "description", content: "Pick a company, write an honest review, get paid instantly." },
-      { property: "og:title", content: "Dashboard — RatePay" },
+      { property: "og:title", content: "Dashboard — ReviewPay" },
       { property: "og:description", content: "Pick a company, write an honest review, get paid instantly." },
     ],
   }),
+
   component: () => (
     <AuthGate>
       <Dashboard />
