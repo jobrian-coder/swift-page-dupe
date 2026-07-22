@@ -64,9 +64,21 @@ function Wallet() {
     setErr(null);
     setOk(false);
     const a = parseFloat(amount);
-    if (!a || a < 20) return setErr("Minimum withdrawal is $20.00.");
-    if (a > balance) return setErr("Amount exceeds available balance.");
+    if (!a || a <= 0) return setErr("Enter a valid amount.");
+    if (a < 20) return setErr("Minimum withdrawal is $20.00.");
     if (!destination.trim()) return setErr("Enter your payout destination.");
+    if (method === "M-Pesa" || method === "Airtel Money") {
+      const digits = destination.replace(/\D/g, "");
+      if (!/^(?:254|0)?[71]\d{8}$/.test(digits))
+        return setErr("Enter a valid Kenyan phone number (e.g. 07XXXXXXXX).");
+    }
+    if (method === "PayPal" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(destination.trim()))
+      return setErr("Enter a valid PayPal email address.");
+    if (method === "Bank" && destination.trim().length < 10)
+      return setErr("Include account name, number and bank (min 10 characters).");
+    if (a > balance)
+      return setErr(`Insufficient balance. You have $${balance.toFixed(2)}; you need $${(a - balance).toFixed(2)} more.`);
+
     const { data: u } = await supabase.auth.getUser();
     const uid = u.user?.id!;
     const { error } = await supabase.from("withdrawals").insert({
