@@ -6,10 +6,10 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Create account — RatePay" },
-      { name: "description", content: "Join RatePay and start earning from company reviews." },
-      { property: "og:title", content: "Create account — RatePay" },
-      { property: "og:description", content: "Join RatePay and start earning from company reviews." },
+      { title: "Create account — ReviewSasa" },
+      { name: "description", content: "Join ReviewSasa and get paid for company reviews." },
+      { property: "og:title", content: "Create account — ReviewSasa" },
+      { property: "og:description", content: "Join ReviewSasa and get paid for company reviews." },
     ],
   }),
   component: RegisterPage,
