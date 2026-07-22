@@ -7,9 +7,9 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Sign in — ReviewSasa" },
-      { name: "description", content: "Sign in to ReviewSasa and get paid for company reviews." },
+      { name: "description", content: "Sign in to ReviewSasa and get rewarded for company reviews." },
       { property: "og:title", content: "Sign in — ReviewSasa" },
-      { property: "og:description", content: "Sign in to ReviewSasa and get paid for company reviews." },
+      { property: "og:description", content: "Sign in to ReviewSasa and get rewarded for company reviews." },
     ],
   }),
   component: LoginPage,
@@ -53,7 +53,7 @@ function LoginPage() {
   };
 
   return (
-    <AuthShell title="Sign in" subtitle="Get paid instantly for every company review">
+    <AuthShell title="Sign in" subtitle="Get rewarded instantly for every company review">
       <form onSubmit={submit}>
         <Field label="Username or email" placeholder="Enter your username" value={identifier} onChange={(e) => setIdentifier(e.target.value)} required />
         <Field label="Password" type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />

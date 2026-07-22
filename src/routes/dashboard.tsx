@@ -14,9 +14,9 @@ export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard — ReviewSasa" },
-      { name: "description", content: "Pick a company, write an honest review, get paid instantly." },
+      { name: "description", content: "Pick a company, write an honest review, get rewarded instantly." },
       { property: "og:title", content: "Dashboard — ReviewSasa" },
-      { property: "og:description", content: "Pick a company, write an honest review, get paid instantly." },
+      { property: "og:description", content: "Pick a company, write an honest review, get rewarded instantly." },
     ],
   }),
 
@@ -33,7 +33,7 @@ const ACTIVATION_STEPS = [
   { icon: "🪪", label: "Checking KRA / tax ID", detail: "Confirming payout eligibility" },
   { icon: "💳", label: "Validating payment method", detail: "Preparing your wallet for instant payouts" },
   { icon: "🛡️", label: "Running compliance check", detail: "Fraud & duplicate account screening" },
-  { icon: "✅", label: "Activating your review slot", detail: "Reserving a paid spot for you" },
+  { icon: "✅", label: "Activating your review slot", detail: "Reserving a reserved spot for you" },
 ];
 
 const ACTIVATION_FEE = 0.6;
@@ -236,7 +236,7 @@ function Dashboard() {
             Hi,{" "}
             <span style={{ color: "var(--brand)" }}>{profile?.username}</span>
           </h1>
-          <p className="text-muted-foreground">Review a company and get paid instantly</p>
+          <p className="text-muted-foreground">Review a company and get rewarded instantly</p>
         </div>
         <Link
           to="/wallet"
@@ -271,7 +271,7 @@ function Dashboard() {
           <div>
             <h2 className="text-xl font-bold">Start reviewing</h2>
             <p className="text-sm text-muted-foreground">
-              {openCount ?? 0} companies · tap one to get paid
+              {openCount ?? 0} companies · tap one to review
             </p>
           </div>
           <Link
@@ -304,7 +304,7 @@ function Dashboard() {
           {[
             ["Pick a company", "Choose from the list above or browse all open slots."],
             ["Write an honest review", "Rate 1–5 stars and share at least 30 characters."],
-            ["Get paid instantly", "The reward on the card goes to your wallet right away."],
+            ["Get rewarded instantly", "The reward on the card goes to your wallet right away."],
             ["Withdraw at $20+", "PayPal, Venmo, Cash App, or bank once you hit $20."],
           ].map(([t, d], i) => (
             <li key={i} className="flex gap-3">
@@ -610,7 +610,7 @@ function CompanyCard({ c }: { c: any }) {
               className="text-[10px] font-bold px-2 py-0.5 rounded-full"
               style={{ background: "var(--accent)", color: "var(--accent-foreground)" }}
             >
-              Pays ${Number(c.payout).toFixed(2)}
+              Reward ${Number(c.payout).toFixed(2)}
             </span>
           </div>
           <div className="text-xs text-muted-foreground truncate">

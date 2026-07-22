@@ -9,7 +9,7 @@ export const Route = createFileRoute("/review/$id")({
   head: () => ({
     meta: [
       { title: "Write a review — ReviewSasa" },
-      { name: "description", content: "Share an honest review and get paid instantly." },
+      { name: "description", content: "Share an honest review and get rewarded instantly." },
     ],
   }),
   component: () => (
