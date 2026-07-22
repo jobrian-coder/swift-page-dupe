@@ -240,15 +240,16 @@ function Dashboard() {
         <Link
           to="/wallet"
           className="rounded-2xl border-2 px-4 py-2 text-right hover:shadow-md transition"
-          style={{ borderColor: "var(--brand)" }}
+          style={{ borderColor: "#16a34a", background: "#16a34a", color: "#ffffff" }}
         >
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+          <div className="text-[10px] uppercase tracking-wider opacity-90">
             Balance
           </div>
-          <div className="text-xl font-bold" style={{ color: "var(--brand)" }}>
+          <div className="text-xl font-bold">
             ${balance.toFixed(2)}
           </div>
         </Link>
+
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -570,9 +571,11 @@ function StatCard({
     <div
       className="rounded-2xl border p-4"
       style={{
-        background: highlight ? "var(--brand)" : "var(--card)",
-        color: highlight ? "var(--brand-foreground)" : "var(--foreground)",
+        background: highlight ? "#16a34a" : "var(--card)",
+        color: highlight ? "#ffffff" : "var(--foreground)",
+        borderColor: highlight ? "#16a34a" : undefined,
       }}
+
     >
       <div className="text-[10px] uppercase tracking-wider opacity-70">{label}</div>
       <div className="text-2xl font-bold">{value}</div>
