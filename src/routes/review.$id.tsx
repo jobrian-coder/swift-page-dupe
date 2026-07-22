@@ -28,6 +28,17 @@ function ReviewForm() {
   const [err, setErr] = useState<string | null>(null);
   const [done, setDone] = useState<number | null>(null);
 
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("reviews_active")
+        .single();
+      return data;
+    },
+  });
+
   const { data: company } = useQuery({
     queryKey: ["company", id],
     queryFn: async () => {
@@ -35,6 +46,7 @@ function ReviewForm() {
       return data;
     },
   });
+
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
