@@ -175,7 +175,7 @@ function Companies() {
                   <span className="text-sm font-semibold px-4 py-2 rounded-full border text-muted-foreground">
                     Full
                   </span>
-                ) : (
+                ) : active ? (
                   <Link
                     to="/review/$id"
                     params={{ id: c.id }}
@@ -183,7 +183,16 @@ function Companies() {
                   >
                     Activate
                   </Link>
+                ) : (
+                  <Link
+                    to="/dashboard"
+                    search={{ activate: 1 } as any}
+                    className="text-sm font-semibold px-4 py-2 rounded-full border hover:bg-muted transition"
+                  >
+                    Activate
+                  </Link>
                 )}
+
               </div>
 
               <div className="flex items-center gap-3">
