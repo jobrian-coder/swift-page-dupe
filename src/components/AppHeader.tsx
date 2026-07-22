@@ -105,7 +105,7 @@ export function AppFooter() {
       className="mt-12 py-6 text-center text-xs text-muted-foreground border-t"
       style={{ background: "var(--card-warm)" }}
     >
-      RatePay · Activate reviews · Minimum withdrawal $20
+      ReviewPay · Activate reviews · Minimum withdrawal $20
     </footer>
   );
 }
