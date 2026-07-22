@@ -180,14 +180,14 @@ function Wallet() {
           {ok && <p className="text-sm" style={{ color: "var(--brand)" }}>Withdrawal request submitted.</p>}
 
           <button
-            disabled={!canWithdraw}
-            className="w-full h-12 rounded-full font-semibold shadow disabled:opacity-60"
+           <button
+            className="w-full h-12 rounded-full font-semibold shadow"
             style={{
-              background: canWithdraw ? "var(--brand)" : "oklch(0.75 0.05 165)",
+              background: "var(--brand)",
               color: "var(--brand-foreground)",
             }}
           >
-            {canWithdraw ? "Request withdrawal" : `Need $${shortfall.toFixed(2)} more`}
+            {canWithdraw ? "Request withdrawal" : `Request withdrawal (need $${shortfall.toFixed(2)} more)`}
           </button>
         </form>
 
