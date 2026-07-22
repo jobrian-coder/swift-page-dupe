@@ -28,11 +28,18 @@ const ACTIVATION_STEPS = [
   { icon: "✅", label: "Activating your review slot", detail: "Reserving a paid spot for you" },
 ];
 
+const ACTIVATION_FEE = 0.6;
+
 function Dashboard() {
   const qc = useQueryClient();
   const [activating, setActivating] = useState(false);
   const [stepIdx, setStepIdx] = useState(0);
   const [done, setDone] = useState(false);
+  const [payOpen, setPayOpen] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [paying, setPaying] = useState(false);
+  const [payErr, setPayErr] = useState<string | null>(null);
+  const [paid, setPaid] = useState(false);
 
   const { data: profile } = useQuery({
     queryKey: ["profile"],
@@ -96,6 +103,37 @@ function Dashboard() {
     setStepIdx(0);
     setDone(false);
   };
+
+  const openPay = () => {
+    closeModal();
+    setPayErr(null);
+    setPaid(false);
+    setPhone("");
+    setPayOpen(true);
+  };
+
+  const closePay = () => {
+    setPayOpen(false);
+    setPaying(false);
+    setPaid(false);
+    setPayErr(null);
+  };
+
+  const submitPay = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPayErr(null);
+    const p = phone.trim();
+    if (!/^(07\d{8}|2547\d{8})$/.test(p)) {
+      setPayErr("Enter a valid M-Pesa number (07XXXXXXXX or 2547XXXXXXXX).");
+      return;
+    }
+    setPaying(true);
+    setTimeout(() => {
+      setPaying(false);
+      setPaid(true);
+    }, 2500);
+  };
+
 
   const balance = Number(profile?.balance ?? 0);
   const earned = Number(profile?.earned ?? 0);
