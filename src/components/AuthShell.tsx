@@ -37,8 +37,8 @@ export function AuthShell({
             </div>
           </div>
           <h1 className="text-3xl font-bold mt-2">
-            <span>Rate</span>
-            <span style={{ color: "var(--brand-accent)" }}>Pay</span>
+            <span>Review</span>
+            <span style={{ color: "var(--brand-accent)" }}>Sasa</span>
           </h1>
           <p className="text-muted-foreground text-sm">{subtitle}</p>
         </div>
