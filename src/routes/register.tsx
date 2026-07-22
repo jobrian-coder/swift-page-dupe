@@ -50,7 +50,7 @@ function RegisterPage() {
   };
 
   return (
-    <AuthShell title="Create account" subtitle="Join and start earning from company reviews">
+    <AuthShell title="Create account" subtitle="Join and get paid for company reviews">
       <form onSubmit={submit}>
         <Field label="Username" placeholder="Choose a username" value={username} onChange={(e) => setUsername(e.target.value)} required minLength={3} />
         <Field label="Email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
