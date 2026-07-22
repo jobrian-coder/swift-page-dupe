@@ -87,7 +87,7 @@ function Companies() {
         </div>
         <h1 className="text-4xl md:text-5xl font-extrabold mt-2 tracking-tight">Find a company to review</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl">
-          Earn a fixed reward per company instantly. Each company accepts up to 200 reviews.
+          Get paid a fixed reward per company instantly. Each company accepts up to 200 reviews.
         </p>
       </div>
 
