@@ -6,10 +6,10 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — RatePay" },
-      { name: "description", content: "Sign in to RatePay and get paid for company reviews." },
-      { property: "og:title", content: "Sign in — RatePay" },
-      { property: "og:description", content: "Sign in to RatePay and get paid for company reviews." },
+      { title: "Sign in — ReviewSasa" },
+      { name: "description", content: "Sign in to ReviewSasa and get paid for company reviews." },
+      { property: "og:title", content: "Sign in — ReviewSasa" },
+      { property: "og:description", content: "Sign in to ReviewSasa and get paid for company reviews." },
     ],
   }),
   component: LoginPage,
