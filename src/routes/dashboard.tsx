@@ -110,61 +110,86 @@ function Dashboard() {
   const openPay = () => {
     closeModal();
     setPayErr(null);
-    setPaid(false);
+    setPayPhase("idle");
     setPhone("");
+    setWaitedSec(0);
     setPayOpen(true);
   };
 
   const closePay = () => {
+    if (pollRef.current) window.clearInterval(pollRef.current);
+    if (tickRef.current) window.clearInterval(tickRef.current);
     setPayOpen(false);
-    setPaying(false);
-    setPaid(false);
+    setPayPhase("idle");
     setPayErr(null);
+    setWaitedSec(0);
   };
 
   const initiatePay = useServerFn(initiateActivationPayment);
   const checkStatus = useServerFn(getPaymentStatus);
   const pollRef = useRef<number | null>(null);
+  const tickRef = useRef<number | null>(null);
 
-  useEffect(() => () => { if (pollRef.current) window.clearInterval(pollRef.current); }, []);
+  useEffect(() => () => {
+    if (pollRef.current) window.clearInterval(pollRef.current);
+    if (tickRef.current) window.clearInterval(tickRef.current);
+  }, []);
 
-  const submitPay = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitPay = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setPayErr(null);
     const p = phone.trim();
     if (!/^(?:0[71]\d{8}|254[71]\d{8})$/.test(p.replace(/\s/g, ""))) {
       setPayErr("Enter a valid M-Pesa number (07XXXXXXXX or 2547XXXXXXXX).");
+      setPayPhase("error");
       return;
     }
-    setPaying(true);
+    setPayPhase("sending");
+    setWaitedSec(0);
     try {
       const { checkout_id } = await initiatePay({ data: { phone: p } });
-      // Poll for callback result
+      setPayPhase("waiting");
       const started = Date.now();
+      if (tickRef.current) window.clearInterval(tickRef.current);
+      tickRef.current = window.setInterval(() => {
+        setWaitedSec(Math.floor((Date.now() - started) / 1000));
+      }, 1000);
+      if (pollRef.current) window.clearInterval(pollRef.current);
       pollRef.current = window.setInterval(async () => {
         try {
           const s = await checkStatus({ data: { checkout_id } });
           if (s.status === "payment.success") {
             if (pollRef.current) window.clearInterval(pollRef.current);
-            setPaying(false);
-            setPaid(true);
+            if (tickRef.current) window.clearInterval(tickRef.current);
+            setPayPhase("success");
             qc.invalidateQueries({ queryKey: ["profile"] });
           } else if (s.status === "payment.failed") {
             if (pollRef.current) window.clearInterval(pollRef.current);
-            setPaying(false);
-            setPayErr("Payment failed or was cancelled. Please try again.");
-          } else if (Date.now() - started > 120000) {
+            if (tickRef.current) window.clearInterval(tickRef.current);
+            setPayErr("Payment was cancelled or failed on your phone. Tap retry to send a new prompt.");
+            setPayPhase("error");
+          } else if (Date.now() - started > 90000) {
             if (pollRef.current) window.clearInterval(pollRef.current);
-            setPaying(false);
-            setPayErr("Timed out waiting for M-Pesa confirmation.");
+            if (tickRef.current) window.clearInterval(tickRef.current);
+            setPayErr("Didn't get an M-Pesa confirmation in time. Check your phone and try again.");
+            setPayPhase("error");
+          } else if (Date.now() - started > 15000) {
+            setPayPhase("confirming");
           }
         } catch { /* keep polling */ }
       }, 3000);
     } catch (err: any) {
-      setPaying(false);
-      setPayErr(err?.message || "Failed to send STK push.");
+      const msg = err?.message || "";
+      let friendly = "Couldn't send the M-Pesa prompt. Please try again.";
+      if (/insufficient/i.test(msg)) friendly = "Insufficient funds to complete this request.";
+      else if (/invalid.*phone|phone.*invalid/i.test(msg)) friendly = "That M-Pesa number was rejected. Double-check and retry.";
+      else if (/not configured/i.test(msg)) friendly = "Payments are temporarily unavailable. Please try again shortly.";
+      else if (msg) friendly = msg;
+      setPayErr(friendly);
+      setPayPhase("error");
     }
   };
+
 
 
   const balance = Number(profile?.balance ?? 0);
