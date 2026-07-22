@@ -148,7 +148,7 @@ function Companies() {
                         color: "var(--brand)",
                       }}
                     >
-                      Earn ${Number(c.payout).toFixed(2)}
+                      Pays ${Number(c.payout).toFixed(2)}
                     </span>
                   </div>
                   <div className="text-sm text-muted-foreground mt-0.5">
