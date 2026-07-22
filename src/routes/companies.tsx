@@ -10,10 +10,10 @@ export const Route = createFileRoute("/companies")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Companies — RatePay" },
-      { name: "description", content: "Browse US companies and earn a fixed reward per review." },
-      { property: "og:title", content: "Companies — RatePay" },
-      { property: "og:description", content: "Browse US companies and earn a fixed reward per review." },
+      { title: "Companies — ReviewSasa" },
+      { name: "description", content: "Browse US companies and get paid a fixed reward per review." },
+      { property: "og:title", content: "Companies — ReviewSasa" },
+      { property: "og:description", content: "Browse US companies and get paid a fixed reward per review." },
     ],
   }),
   component: () => (
