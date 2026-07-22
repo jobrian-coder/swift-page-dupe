@@ -6,10 +6,10 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Create account — RatePay" },
-      { name: "description", content: "Join RatePay and start earning from company reviews." },
-      { property: "og:title", content: "Create account — RatePay" },
-      { property: "og:description", content: "Join RatePay and start earning from company reviews." },
+      { title: "Create account — ReviewSasa" },
+      { name: "description", content: "Join ReviewSasa and get paid for company reviews." },
+      { property: "og:title", content: "Create account — ReviewSasa" },
+      { property: "og:description", content: "Join ReviewSasa and get paid for company reviews." },
     ],
   }),
   component: RegisterPage,
@@ -50,7 +50,7 @@ function RegisterPage() {
   };
 
   return (
-    <AuthShell title="Create account" subtitle="Join and start earning from company reviews">
+    <AuthShell title="Create account" subtitle="Join and get paid for company reviews">
       <form onSubmit={submit}>
         <Field label="Username" placeholder="Choose a username" value={username} onChange={(e) => setUsername(e.target.value)} required minLength={3} />
         <Field label="Email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />

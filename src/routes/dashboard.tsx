@@ -13,9 +13,9 @@ export const Route = createFileRoute("/dashboard")({
   }),
   head: () => ({
     meta: [
-      { title: "Dashboard — ReviewPay" },
+      { title: "Dashboard — ReviewSasa" },
       { name: "description", content: "Pick a company, write an honest review, get paid instantly." },
-      { property: "og:title", content: "Dashboard — ReviewPay" },
+      { property: "og:title", content: "Dashboard — ReviewSasa" },
       { property: "og:description", content: "Pick a company, write an honest review, get paid instantly." },
     ],
   }),
@@ -261,7 +261,7 @@ function Dashboard() {
           value={`$${balance.toFixed(2)}`}
           sub={`$${balance.toFixed(2)} to $20`}
         />
-        <StatCard label="Earned" value={`$${earned.toFixed(2)}`} />
+        <StatCard label="Received" value={`$${earned.toFixed(2)}`} />
         <StatCard label="Reviews" value={String(reviewCount ?? 0)} />
         <StatCard label="Open" value={String(openCount ?? 0)} />
       </div>
@@ -271,7 +271,7 @@ function Dashboard() {
           <div>
             <h2 className="text-xl font-bold">Start reviewing</h2>
             <p className="text-sm text-muted-foreground">
-              {openCount ?? 0} companies · tap one to earn
+              {openCount ?? 0} companies · tap one to get paid
             </p>
           </div>
           <Link
@@ -610,7 +610,7 @@ function CompanyCard({ c }: { c: any }) {
               className="text-[10px] font-bold px-2 py-0.5 rounded-full"
               style={{ background: "var(--accent)", color: "var(--accent-foreground)" }}
             >
-              Earn ${Number(c.payout).toFixed(2)}
+              Pays ${Number(c.payout).toFixed(2)}
             </span>
           </div>
           <div className="text-xs text-muted-foreground truncate">

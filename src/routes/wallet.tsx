@@ -8,9 +8,9 @@ export const Route = createFileRoute("/wallet")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Wallet — RatePay" },
+      { title: "Wallet — ReviewSasa" },
       { name: "description", content: "Track your balance and withdraw once you reach $20.00." },
-      { property: "og:title", content: "Wallet — RatePay" },
+      { property: "og:title", content: "Wallet — ReviewSasa" },
       { property: "og:description", content: "Track your balance and withdraw once you reach $20.00." },
     ],
   }),
@@ -119,7 +119,7 @@ function Wallet() {
           style={{ background: "var(--card)" }}
         >
           <div className="text-xs uppercase tracking-wider text-muted-foreground">
-            Total earned
+            Total received
           </div>
           <div className="text-5xl font-bold my-1">${earned.toFixed(2)}</div>
           <div className="text-sm text-muted-foreground">All-time review rewards</div>
