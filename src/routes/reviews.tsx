@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/reviews")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "My Reviews — RatePay" },
