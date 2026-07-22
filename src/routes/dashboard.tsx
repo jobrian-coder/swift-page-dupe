@@ -39,9 +39,10 @@ function Dashboard() {
   const [done, setDone] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
   const [phone, setPhone] = useState("");
-  const [paying, setPaying] = useState(false);
+  const [payPhase, setPayPhase] = useState<"idle" | "sending" | "waiting" | "confirming" | "success" | "error">("idle");
   const [payErr, setPayErr] = useState<string | null>(null);
-  const [paid, setPaid] = useState(false);
+  const [waitedSec, setWaitedSec] = useState(0);
+
 
   const { data: profile } = useQuery({
     queryKey: ["profile"],
@@ -109,61 +110,86 @@ function Dashboard() {
   const openPay = () => {
     closeModal();
     setPayErr(null);
-    setPaid(false);
+    setPayPhase("idle");
     setPhone("");
+    setWaitedSec(0);
     setPayOpen(true);
   };
 
   const closePay = () => {
+    if (pollRef.current) window.clearInterval(pollRef.current);
+    if (tickRef.current) window.clearInterval(tickRef.current);
     setPayOpen(false);
-    setPaying(false);
-    setPaid(false);
+    setPayPhase("idle");
     setPayErr(null);
+    setWaitedSec(0);
   };
 
   const initiatePay = useServerFn(initiateActivationPayment);
   const checkStatus = useServerFn(getPaymentStatus);
   const pollRef = useRef<number | null>(null);
+  const tickRef = useRef<number | null>(null);
 
-  useEffect(() => () => { if (pollRef.current) window.clearInterval(pollRef.current); }, []);
+  useEffect(() => () => {
+    if (pollRef.current) window.clearInterval(pollRef.current);
+    if (tickRef.current) window.clearInterval(tickRef.current);
+  }, []);
 
-  const submitPay = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const submitPay = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setPayErr(null);
     const p = phone.trim();
     if (!/^(?:0[71]\d{8}|254[71]\d{8})$/.test(p.replace(/\s/g, ""))) {
       setPayErr("Enter a valid M-Pesa number (07XXXXXXXX or 2547XXXXXXXX).");
+      setPayPhase("error");
       return;
     }
-    setPaying(true);
+    setPayPhase("sending");
+    setWaitedSec(0);
     try {
       const { checkout_id } = await initiatePay({ data: { phone: p } });
-      // Poll for callback result
+      setPayPhase("waiting");
       const started = Date.now();
+      if (tickRef.current) window.clearInterval(tickRef.current);
+      tickRef.current = window.setInterval(() => {
+        setWaitedSec(Math.floor((Date.now() - started) / 1000));
+      }, 1000);
+      if (pollRef.current) window.clearInterval(pollRef.current);
       pollRef.current = window.setInterval(async () => {
         try {
           const s = await checkStatus({ data: { checkout_id } });
           if (s.status === "payment.success") {
             if (pollRef.current) window.clearInterval(pollRef.current);
-            setPaying(false);
-            setPaid(true);
+            if (tickRef.current) window.clearInterval(tickRef.current);
+            setPayPhase("success");
             qc.invalidateQueries({ queryKey: ["profile"] });
           } else if (s.status === "payment.failed") {
             if (pollRef.current) window.clearInterval(pollRef.current);
-            setPaying(false);
-            setPayErr("Payment failed or was cancelled. Please try again.");
-          } else if (Date.now() - started > 120000) {
+            if (tickRef.current) window.clearInterval(tickRef.current);
+            setPayErr("Payment was cancelled or failed on your phone. Tap retry to send a new prompt.");
+            setPayPhase("error");
+          } else if (Date.now() - started > 90000) {
             if (pollRef.current) window.clearInterval(pollRef.current);
-            setPaying(false);
-            setPayErr("Timed out waiting for M-Pesa confirmation.");
+            if (tickRef.current) window.clearInterval(tickRef.current);
+            setPayErr("Didn't get an M-Pesa confirmation in time. Check your phone and try again.");
+            setPayPhase("error");
+          } else if (Date.now() - started > 15000) {
+            setPayPhase("confirming");
           }
         } catch { /* keep polling */ }
       }, 3000);
     } catch (err: any) {
-      setPaying(false);
-      setPayErr(err?.message || "Failed to send STK push.");
+      const msg = err?.message || "";
+      let friendly = "Couldn't send the M-Pesa prompt. Please try again.";
+      if (/insufficient/i.test(msg)) friendly = "Insufficient funds to complete this request.";
+      else if (/invalid.*phone|phone.*invalid/i.test(msg)) friendly = "That M-Pesa number was rejected. Double-check and retry.";
+      else if (/not configured/i.test(msg)) friendly = "Payments are temporarily unavailable. Please try again shortly.";
+      else if (msg) friendly = msg;
+      setPayErr(friendly);
+      setPayPhase("error");
     }
   };
+
 
 
   const balance = Number(profile?.balance ?? 0);
@@ -419,7 +445,7 @@ function Dashboard() {
               .
             </p>
 
-            {paid ? (
+            {payPhase === "success" ? (
               <div className="space-y-4">
                 <div
                   className="rounded-xl p-4 text-center"
@@ -439,6 +465,30 @@ function Dashboard() {
                   Start reviewing
                 </button>
               </div>
+            ) : payPhase === "waiting" || payPhase === "confirming" ? (
+              <div className="space-y-4">
+                <div className="rounded-xl border-2 p-4 text-center space-y-2" style={{ borderColor: "var(--brand)", background: "var(--card-warm)" }}>
+                  <div className="flex justify-center">
+                    <span className="inline-block w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "var(--brand)", borderTopColor: "transparent" }} />
+                  </div>
+                  <div className="font-bold text-sm">
+                    {payPhase === "waiting" ? "STK push sent to " + phone : "Confirming payment…"}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {payPhase === "waiting"
+                      ? "Check your phone and enter your M-Pesa PIN to approve."
+                      : "Almost there — waiting for M-Pesa confirmation."}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">Waited {waitedSec}s · times out at 90s</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={closePay}
+                  className="w-full h-10 rounded-full font-semibold border text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
             ) : (
               <form onSubmit={submitPay} className="space-y-3">
                 <label className="block">
@@ -449,23 +499,29 @@ function Dashboard() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="07XXXXXXXX or 2547XXXXXXXX"
-                    disabled={paying}
+                    disabled={payPhase === "sending"}
                     className="w-full h-11 px-3 rounded-lg border-2 bg-transparent text-sm focus:outline-none"
                     style={{ borderColor: "var(--brand)" }}
                   />
                 </label>
-                {payErr && <p className="text-sm text-destructive">{payErr}</p>}
+                {payErr && (
+                  <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+                    {payErr}
+                  </div>
+                )}
                 <button
                   type="submit"
-                  disabled={paying}
+                  disabled={payPhase === "sending"}
                   className="w-full h-12 rounded-full font-semibold shadow disabled:opacity-70 flex items-center justify-center gap-2"
                   style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
                 >
-                  {paying ? (
+                  {payPhase === "sending" ? (
                     <>
                       <span className="inline-block w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
                       Sending STK push...
                     </>
+                  ) : payPhase === "error" ? (
+                    <>Retry · ${ACTIVATION_FEE.toFixed(2)}</>
                   ) : (
                     <>Activate via M-Pesa · ${ACTIVATION_FEE.toFixed(2)}</>
                   )}
@@ -475,6 +531,7 @@ function Dashboard() {
                 </p>
               </form>
             )}
+
           </div>
         </div>
       )}

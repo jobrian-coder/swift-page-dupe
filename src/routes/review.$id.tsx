@@ -28,6 +28,17 @@ function ReviewForm() {
   const [err, setErr] = useState<string | null>(null);
   const [done, setDone] = useState<number | null>(null);
 
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("reviews_active")
+        .single();
+      return data;
+    },
+  });
+
   const { data: company } = useQuery({
     queryKey: ["company", id],
     queryFn: async () => {
@@ -35,6 +46,7 @@ function ReviewForm() {
       return data;
     },
   });
+
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +78,27 @@ function ReviewForm() {
     qc.invalidateQueries();
   };
 
-  if (!company) return <div className="text-muted-foreground">Loading...</div>;
+  if (!company || profileLoading) return <div className="text-muted-foreground">Loading...</div>;
+
+  if (!profile?.reviews_active) {
+    return (
+      <div className="max-w-md mx-auto text-center py-10">
+        <div className="text-6xl mb-3">🔒</div>
+        <h1 className="text-2xl font-bold mb-2">Reviews not activated</h1>
+        <p className="text-muted-foreground mb-5">
+          You need to activate reviews before you can submit and earn.
+        </p>
+        <button
+          onClick={() => navigate({ to: "/dashboard" })}
+          className="px-5 py-2 rounded-full font-semibold"
+          style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
+        >
+          Go to activation
+        </button>
+      </div>
+    );
+  }
+
 
   if (done !== null) {
     return (
