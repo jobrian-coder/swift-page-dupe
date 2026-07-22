@@ -8,9 +8,9 @@ export const Route = createFileRoute("/wallet")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Wallet — RatePay" },
+      { title: "Wallet — ReviewSasa" },
       { name: "description", content: "Track your balance and withdraw once you reach $20.00." },
-      { property: "og:title", content: "Wallet — RatePay" },
+      { property: "og:title", content: "Wallet — ReviewSasa" },
       { property: "og:description", content: "Track your balance and withdraw once you reach $20.00." },
     ],
   }),
