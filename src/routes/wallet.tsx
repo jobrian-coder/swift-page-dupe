@@ -64,9 +64,21 @@ function Wallet() {
     setErr(null);
     setOk(false);
     const a = parseFloat(amount);
-    if (!a || a < 20) return setErr("Minimum withdrawal is $20.00.");
-    if (a > balance) return setErr("Amount exceeds available balance.");
+    if (!a || a <= 0) return setErr("Enter a valid amount.");
+    if (a < 20) return setErr("Minimum withdrawal is $20.00.");
     if (!destination.trim()) return setErr("Enter your payout destination.");
+    if (method === "M-Pesa" || method === "Airtel Money") {
+      const digits = destination.replace(/\D/g, "");
+      if (!/^(?:254|0)?[71]\d{8}$/.test(digits))
+        return setErr("Enter a valid Kenyan phone number (e.g. 07XXXXXXXX).");
+    }
+    if (method === "PayPal" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(destination.trim()))
+      return setErr("Enter a valid PayPal email address.");
+    if (method === "Bank" && destination.trim().length < 10)
+      return setErr("Include account name, number and bank (min 10 characters).");
+    if (a > balance)
+      return setErr(`Insufficient balance. You have $${balance.toFixed(2)}; you need $${(a - balance).toFixed(2)} more.`);
+
     const { data: u } = await supabase.auth.getUser();
     const uid = u.user?.id!;
     const { error } = await supabase.from("withdrawals").insert({
@@ -135,7 +147,6 @@ function Wallet() {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
-              disabled={!canWithdraw}
             />
           </label>
 
@@ -145,7 +156,6 @@ function Wallet() {
               value={method}
               onChange={(e) => setMethod(e.target.value)}
               className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
-              disabled={!canWithdraw}
             >
               {METHODS.map((m) => (
                 <option key={m.id} value={m.id}>{m.label}</option>
@@ -162,7 +172,6 @@ function Wallet() {
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
               className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
-              disabled={!canWithdraw}
             />
             <span className="text-xs text-muted-foreground block mt-1">{active.hint}</span>
           </label>
@@ -171,14 +180,13 @@ function Wallet() {
           {ok && <p className="text-sm" style={{ color: "var(--brand)" }}>Withdrawal request submitted.</p>}
 
           <button
-            disabled={!canWithdraw}
-            className="w-full h-12 rounded-full font-semibold shadow disabled:opacity-60"
+            className="w-full h-12 rounded-full font-semibold shadow"
             style={{
-              background: canWithdraw ? "var(--brand)" : "oklch(0.75 0.05 165)",
+              background: "var(--brand)",
               color: "var(--brand-foreground)",
             }}
           >
-            {canWithdraw ? "Request withdrawal" : `Need $${shortfall.toFixed(2)} more`}
+            {canWithdraw ? "Request withdrawal" : `Request withdrawal (need $${shortfall.toFixed(2)} more)`}
           </button>
         </form>
 
