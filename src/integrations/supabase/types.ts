@@ -17,6 +17,7 @@ export type Database = {
       companies: {
         Row: {
           color: string
+          description: string
           emoji: string
           id: string
           industry: string
@@ -28,6 +29,7 @@ export type Database = {
         }
         Insert: {
           color?: string
+          description?: string
           emoji?: string
           id?: string
           industry: string
@@ -39,6 +41,7 @@ export type Database = {
         }
         Update: {
           color?: string
+          description?: string
           emoji?: string
           id?: string
           industry?: string
