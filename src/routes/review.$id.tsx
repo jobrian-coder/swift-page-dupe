@@ -169,7 +169,7 @@ function ReviewForm() {
           className="w-full h-11 rounded-full font-semibold shadow disabled:opacity-60"
           style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
         >
-          {submitting ? "Submitting..." : `Submit and earn $${Number(company.payout).toFixed(2)}`}
+          {submitting ? "Submitting..." : `Submit for $${Number(company.payout).toFixed(2)}`}
         </button>
       </form>
     </div>
