@@ -20,10 +20,19 @@ export const Route = createFileRoute("/dashboard")({
   ),
 });
 
+const ACTIVATION_STEPS = [
+  { icon: "📍", label: "Verifying location", detail: "Matching your region to available companies" },
+  { icon: "🪪", label: "Checking KRA / tax ID", detail: "Confirming payout eligibility" },
+  { icon: "💳", label: "Validating payment method", detail: "Preparing your wallet for instant payouts" },
+  { icon: "🛡️", label: "Running compliance check", detail: "Fraud & duplicate account screening" },
+  { icon: "✅", label: "Activating your review slot", detail: "Reserving a paid spot for you" },
+];
+
 function Dashboard() {
   const qc = useQueryClient();
   const [activating, setActivating] = useState(false);
-  const [checking, setChecking] = useState(false);
+  const [stepIdx, setStepIdx] = useState(0);
+  const [done, setDone] = useState(false);
 
   const { data: profile } = useQuery({
     queryKey: ["profile"],
@@ -66,15 +75,26 @@ function Dashboard() {
     },
   });
 
-  const activate = async () => {
+  useEffect(() => {
+    if (!activating || done) return;
+    if (stepIdx >= ACTIVATION_STEPS.length) {
+      setDone(true);
+      return;
+    }
+    const t = setTimeout(() => setStepIdx((i) => i + 1), 1400);
+    return () => clearTimeout(t);
+  }, [activating, stepIdx, done]);
+
+  const activate = () => {
+    setDone(false);
+    setStepIdx(0);
     setActivating(true);
-    setTimeout(async () => {
-      setChecking(true);
-      setTimeout(async () => {
-        setActivating(false);
-        setChecking(false);
-      }, 2000);
-    }, 1500);
+  };
+
+  const closeModal = () => {
+    setActivating(false);
+    setStepIdx(0);
+    setDone(false);
   };
 
   const balance = Number(profile?.balance ?? 0);
