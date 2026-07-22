@@ -147,7 +147,6 @@ function Wallet() {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
-              disabled={!canWithdraw}
             />
           </label>
 
@@ -157,7 +156,6 @@ function Wallet() {
               value={method}
               onChange={(e) => setMethod(e.target.value)}
               className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
-              disabled={!canWithdraw}
             >
               {METHODS.map((m) => (
                 <option key={m.id} value={m.id}>{m.label}</option>
@@ -174,7 +172,6 @@ function Wallet() {
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
               className="w-full h-11 px-3 rounded-lg border bg-transparent text-sm"
-              disabled={!canWithdraw}
             />
             <span className="text-xs text-muted-foreground block mt-1">{active.hint}</span>
           </label>
