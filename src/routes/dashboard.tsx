@@ -240,16 +240,17 @@ function Dashboard() {
         </div>
         <Link
           to="/wallet"
-          className="rounded-2xl border-2 px-4 py-2 text-right hover:shadow-md transition"
-          style={{ borderColor: "#16a34a", background: "#16a34a", color: "#ffffff" }}
+          className="rounded-xl px-5 py-3 text-right hover:opacity-90 transition shadow-sm"
+          style={{ background: "var(--brand)", color: "#ffffff" }}
         >
-          <div className="text-[10px] uppercase tracking-wider opacity-90">
+          <div className="text-[10px] uppercase tracking-wider opacity-90 font-semibold">
             Balance
           </div>
           <div className="text-xl font-bold">
             ${balance.toFixed(2)}
           </div>
         </Link>
+
 
       </div>
 
