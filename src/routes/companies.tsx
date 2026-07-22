@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { companyLogoUrl } from "@/lib/companyDomains";
+import { CompanyLogo } from "@/components/CompanyLogo";
 
 export const Route = createFileRoute("/companies")({
   ssr: false,
