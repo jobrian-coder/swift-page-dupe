@@ -119,7 +119,7 @@ function Wallet() {
           style={{ background: "var(--card)" }}
         >
           <div className="text-xs uppercase tracking-wider text-muted-foreground">
-            Total earned
+            Total received
           </div>
           <div className="text-5xl font-bold my-1">${earned.toFixed(2)}</div>
           <div className="text-sm text-muted-foreground">All-time review rewards</div>
