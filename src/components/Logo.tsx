@@ -31,9 +31,10 @@ export function Logo({ size = 32 }: { size?: number }) {
         </div>
       </div>
       <span className="text-xl font-bold tracking-tight">
-        <span style={{ color: "var(--foreground)" }}>Rate</span>
+        <span style={{ color: "var(--foreground)" }}>Review</span>
         <span style={{ color: "var(--brand-accent)" }}>Pay</span>
       </span>
+
     </Link>
   );
 }

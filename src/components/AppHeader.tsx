@@ -54,28 +54,28 @@ export function AppHeader() {
             })}
           </nav>
         </div>
-        <div className="flex items-center gap-3 text-sm">
-          <div
-            className="hidden sm:flex flex-col items-end px-3 py-1 rounded-lg border"
-            style={{ borderColor: "var(--brand)" }}
+        <div className="flex items-center gap-4 text-sm">
+          <Link
+            to="/wallet"
+            className="hidden sm:flex flex-col items-start px-4 py-1.5 rounded-xl transition hover:opacity-90"
+            style={{ background: "var(--brand)", color: "#ffffff" }}
           >
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            <span className="text-[10px] uppercase tracking-wider opacity-90 font-semibold">
               Balance
             </span>
-            <span className="font-bold" style={{ color: "#16a34a" }}>
+            <span className="font-bold">
               ${Number(profile?.balance ?? 0).toFixed(2)}
             </span>
-          </div>
-          <span className="hidden sm:inline font-medium">{profile?.username}</span>
+          </Link>
+          <span className="hidden sm:inline font-medium text-foreground">{profile?.username}</span>
           <button
             onClick={signOut}
-            className="font-semibold transition-colors hover:opacity-80"
-            style={{ color: "#16a34a" }}
+            className="font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Log out
           </button>
-
         </div>
+
       </div>
       <div className="md:hidden border-t px-4 py-2 flex gap-1 overflow-x-auto text-sm">
         {links.map((l) => {
@@ -105,7 +105,7 @@ export function AppFooter() {
       className="mt-12 py-6 text-center text-xs text-muted-foreground border-t"
       style={{ background: "var(--card-warm)" }}
     >
-      RatePay · Activate reviews · Minimum withdrawal $20
+      ReviewPay · Activate reviews · Minimum withdrawal $20
     </footer>
   );
 }

@@ -13,12 +13,13 @@ export const Route = createFileRoute("/dashboard")({
   }),
   head: () => ({
     meta: [
-      { title: "Dashboard — RatePay" },
+      { title: "Dashboard — ReviewPay" },
       { name: "description", content: "Pick a company, write an honest review, get paid instantly." },
-      { property: "og:title", content: "Dashboard — RatePay" },
+      { property: "og:title", content: "Dashboard — ReviewPay" },
       { property: "og:description", content: "Pick a company, write an honest review, get paid instantly." },
     ],
   }),
+
   component: () => (
     <AuthGate>
       <Dashboard />
@@ -239,16 +240,17 @@ function Dashboard() {
         </div>
         <Link
           to="/wallet"
-          className="rounded-2xl border-2 px-4 py-2 text-right hover:shadow-md transition"
-          style={{ borderColor: "#16a34a", background: "#16a34a", color: "#ffffff" }}
+          className="rounded-xl px-5 py-3 text-right hover:opacity-90 transition shadow-sm"
+          style={{ background: "var(--brand)", color: "#ffffff" }}
         >
-          <div className="text-[10px] uppercase tracking-wider opacity-90">
+          <div className="text-[10px] uppercase tracking-wider opacity-90 font-semibold">
             Balance
           </div>
           <div className="text-xl font-bold">
             ${balance.toFixed(2)}
           </div>
         </Link>
+
 
       </div>
 
@@ -571,10 +573,11 @@ function StatCard({
     <div
       className="rounded-2xl border p-4"
       style={{
-        background: highlight ? "#16a34a" : "var(--card)",
+        background: highlight ? "var(--brand)" : "var(--card)",
         color: highlight ? "#ffffff" : "var(--foreground)",
-        borderColor: highlight ? "#16a34a" : undefined,
+        borderColor: highlight ? "var(--brand)" : undefined,
       }}
+
 
     >
       <div className="text-[10px] uppercase tracking-wider opacity-70">{label}</div>
