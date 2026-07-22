@@ -573,10 +573,11 @@ function StatCard({
     <div
       className="rounded-2xl border p-4"
       style={{
-        background: highlight ? "#16a34a" : "var(--card)",
+        background: highlight ? "var(--brand)" : "var(--card)",
         color: highlight ? "#ffffff" : "var(--foreground)",
-        borderColor: highlight ? "#16a34a" : undefined,
+        borderColor: highlight ? "var(--brand)" : undefined,
       }}
+
 
     >
       <div className="text-[10px] uppercase tracking-wider opacity-70">{label}</div>
