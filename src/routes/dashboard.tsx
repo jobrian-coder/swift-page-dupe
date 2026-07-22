@@ -210,29 +210,113 @@ function Dashboard() {
         </ol>
       </div>
 
-      {(activating || checking) && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
-          <div className="bg-card rounded-2xl p-6 max-w-sm w-full text-center">
-            <div className="text-2xl mb-2">🔒</div>
-            <div className="font-bold text-lg">Activate review</div>
-            <div className="text-sm text-muted-foreground mb-4">
-              Running security &amp; compliance checks...
-            </div>
-            <div className="h-2 rounded-full bg-muted overflow-hidden mb-4">
+      {activating && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
+          <div
+            className="rounded-3xl p-6 max-w-md w-full shadow-2xl"
+            style={{ background: "var(--card)" }}
+          >
+            <div className="flex items-center gap-3 mb-1">
               <div
-                className="h-full transition-all"
+                className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
+                style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
+              >
+                🔒
+              </div>
+              <div>
+                <div className="font-bold text-lg">Activating review access</div>
+                <div className="text-xs text-muted-foreground">
+                  Please keep this window open
+                </div>
+              </div>
+            </div>
+
+            <div className="h-2 rounded-full bg-muted overflow-hidden my-4">
+              <div
+                className="h-full transition-all duration-500"
                 style={{
-                  width: checking ? "90%" : "40%",
+                  width: `${Math.min(100, (stepIdx / ACTIVATION_STEPS.length) * 100)}%`,
                   background: "var(--brand)",
                 }}
               />
             </div>
-            <div className="text-sm">
-              {checking ? "Checking payment..." : "Verifying account..."}
-            </div>
-            <div className="text-xs text-muted-foreground mt-1">
-              This may take a few seconds
-            </div>
+
+            <ul className="space-y-2.5">
+              {ACTIVATION_STEPS.map((s, i) => {
+                const state =
+                  i < stepIdx ? "done" : i === stepIdx && !done ? "active" : "pending";
+                return (
+                  <li
+                    key={s.label}
+                    className="flex items-start gap-3 rounded-xl border p-2.5"
+                    style={{
+                      background:
+                        state === "active" ? "var(--card-warm)" : "transparent",
+                      borderColor:
+                        state === "done"
+                          ? "var(--brand)"
+                          : state === "active"
+                            ? "var(--brand)"
+                            : "var(--border)",
+                      opacity: state === "pending" ? 0.55 : 1,
+                    }}
+                  >
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-base"
+                      style={{
+                        background:
+                          state === "done" ? "var(--brand)" : "var(--muted)",
+                        color:
+                          state === "done" ? "var(--brand-foreground)" : "inherit",
+                      }}
+                    >
+                      {state === "done" ? "✓" : state === "active" ? (
+                        <span className="inline-block w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                      ) : (
+                        s.icon
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold">{s.label}</div>
+                      <div className="text-xs text-muted-foreground">{s.detail}</div>
+                    </div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider pt-1"
+                      style={{
+                        color:
+                          state === "done"
+                            ? "var(--brand)"
+                            : state === "active"
+                              ? "var(--brand-accent)"
+                              : "var(--muted-foreground)",
+                      }}
+                    >
+                      {state === "done" ? "OK" : state === "active" ? "…" : "Wait"}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {done ? (
+              <div className="mt-5 space-y-3">
+                <div
+                  className="rounded-xl p-3 text-sm text-center font-semibold"
+                  style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
+                >
+                  All checks passed — review access active
+                </div>
+                <button
+                  onClick={closeModal}
+                  className="w-full h-11 rounded-full font-semibold shadow"
+                  style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
+                >
+                  Start reviewing
+                </button>
+              </div>
+            ) : (
+              <div className="text-xs text-muted-foreground text-center mt-4">
+                This usually takes 10–20 seconds. Do not refresh.
+              </div>
+            )}
           </div>
         </div>
       )}
