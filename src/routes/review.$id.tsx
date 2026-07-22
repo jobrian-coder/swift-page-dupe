@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 export const Route = createFileRoute("/review/$id")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Write a review — RatePay" },

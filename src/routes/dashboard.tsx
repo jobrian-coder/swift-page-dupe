@@ -7,6 +7,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { initiateActivationPayment, getPaymentStatus } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/dashboard")({
+  ssr: false,
   validateSearch: (s: Record<string, unknown>) => ({
     activate: s.activate === 1 || s.activate === "1" ? 1 : undefined,
   }),
