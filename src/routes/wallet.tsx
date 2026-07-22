@@ -180,7 +180,6 @@ function Wallet() {
           {ok && <p className="text-sm" style={{ color: "var(--brand)" }}>Withdrawal request submitted.</p>}
 
           <button
-           <button
             className="w-full h-12 rounded-full font-semibold shadow"
             style={{
               background: "var(--brand)",
