@@ -9,6 +9,9 @@ function normalizePhone(input: string): string | null {
   return null;
 }
 
+const USD_TO_KES = 125;
+const ACTIVATION_USD = 0.6;
+
 export const initiateActivationPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { phone: string }) => input)
@@ -20,7 +23,7 @@ export const initiateActivationPayment = createServerFn({ method: "POST" })
     const phone = normalizePhone(data.phone);
     if (!phone) throw new Error("Invalid M-Pesa phone number");
 
-    const amount = 1; // Lipwa minimum is 10 KES; using integer amount required by API
+    const amount = Math.max(1, Math.round(ACTIVATION_USD * USD_TO_KES)); // KES integer
     const origin = process.env.PUBLIC_APP_URL || "https://project--501c8904-9226-4be3-8ab6-e42f166c2e86.lovable.app";
     const callback_url = `${origin}/api/public/lipwa-callback`;
 
