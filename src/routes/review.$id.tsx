@@ -81,23 +81,10 @@ function ReviewForm() {
   if (!company || profileLoading) return <div className="text-muted-foreground">Loading...</div>;
 
   if (!profile?.reviews_active) {
-    return (
-      <div className="max-w-md mx-auto text-center py-10">
-        <div className="text-6xl mb-3">🔒</div>
-        <h1 className="text-2xl font-bold mb-2">Reviews not activated</h1>
-        <p className="text-muted-foreground mb-5">
-          You need to activate reviews before you can submit and earn.
-        </p>
-        <button
-          onClick={() => navigate({ to: "/dashboard" })}
-          className="px-5 py-2 rounded-full font-semibold"
-          style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
-        >
-          Go to activation
-        </button>
-      </div>
-    );
+    navigate({ to: "/dashboard", search: { activate: 1 } as any, replace: true });
+    return <div className="text-muted-foreground">Redirecting to activation…</div>;
   }
+
 
 
   if (done !== null) {
