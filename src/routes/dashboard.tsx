@@ -127,8 +127,9 @@ function Dashboard() {
           </h1>
           <p className="text-muted-foreground">Review a company and get paid instantly</p>
         </div>
-        <div
-          className="rounded-2xl border-2 px-4 py-2 text-right"
+        <Link
+          to="/wallet"
+          className="rounded-2xl border-2 px-4 py-2 text-right hover:shadow-md transition"
           style={{ borderColor: "var(--brand)" }}
         >
           <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -137,7 +138,7 @@ function Dashboard() {
           <div className="text-xl font-bold" style={{ color: "var(--brand)" }}>
             ${balance.toFixed(2)}
           </div>
-        </div>
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
