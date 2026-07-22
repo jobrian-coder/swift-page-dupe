@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { companyLogoUrl } from "@/lib/companyDomains";
+import { CompanyLogo } from "@/components/CompanyLogo";
 
 export const Route = createFileRoute("/companies")({
   ssr: false,
@@ -129,7 +129,6 @@ function Companies() {
         {filtered.map((c) => {
           const pct = Math.round((c.taken_spots / c.total_spots) * 100);
           const full = c.taken_spots >= c.total_spots;
-          const logo = companyLogoUrl(c.name);
           return (
             <div
               key={c.id}
@@ -137,24 +136,8 @@ function Companies() {
               style={{ background: "var(--card)" }}
             >
               <div className="flex items-start gap-3">
-                <div
-                  className="w-12 h-12 rounded-xl overflow-hidden flex items-center justify-center text-xl shrink-0"
-                  style={{ background: c.color + "18" }}
-                >
-                  {logo ? (
-                    <img
-                      src={logo}
-                      alt={`${c.name} logo`}
-                      className="w-full h-full object-contain p-1"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).style.display = "none";
-                        (e.currentTarget.parentElement as HTMLElement).textContent = c.emoji;
-                      }}
-                    />
-                  ) : (
-                    <span>{c.emoji}</span>
-                  )}
-                </div>
+                <CompanyLogo name={c.name} emoji={c.emoji} color={c.color} size={48} />
+
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <div className="font-bold text-lg leading-tight">{c.name}</div>
