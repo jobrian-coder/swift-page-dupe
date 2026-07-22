@@ -13,9 +13,9 @@ export const Route = createFileRoute("/dashboard")({
   }),
   head: () => ({
     meta: [
-      { title: "Dashboard — ReviewPay" },
+      { title: "Dashboard — ReviewSasa" },
       { name: "description", content: "Pick a company, write an honest review, get paid instantly." },
-      { property: "og:title", content: "Dashboard — ReviewPay" },
+      { property: "og:title", content: "Dashboard — ReviewSasa" },
       { property: "og:description", content: "Pick a company, write an honest review, get paid instantly." },
     ],
   }),
