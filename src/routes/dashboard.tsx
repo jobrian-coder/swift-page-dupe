@@ -445,7 +445,7 @@ function Dashboard() {
               .
             </p>
 
-            {paid ? (
+            {payPhase === "success" ? (
               <div className="space-y-4">
                 <div
                   className="rounded-xl p-4 text-center"
@@ -465,6 +465,30 @@ function Dashboard() {
                   Start reviewing
                 </button>
               </div>
+            ) : payPhase === "waiting" || payPhase === "confirming" ? (
+              <div className="space-y-4">
+                <div className="rounded-xl border-2 p-4 text-center space-y-2" style={{ borderColor: "var(--brand)", background: "var(--card-warm)" }}>
+                  <div className="flex justify-center">
+                    <span className="inline-block w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "var(--brand)", borderTopColor: "transparent" }} />
+                  </div>
+                  <div className="font-bold text-sm">
+                    {payPhase === "waiting" ? "STK push sent to " + phone : "Confirming payment…"}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {payPhase === "waiting"
+                      ? "Check your phone and enter your M-Pesa PIN to approve."
+                      : "Almost there — waiting for M-Pesa confirmation."}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">Waited {waitedSec}s · times out at 90s</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={closePay}
+                  className="w-full h-10 rounded-full font-semibold border text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
             ) : (
               <form onSubmit={submitPay} className="space-y-3">
                 <label className="block">
@@ -475,23 +499,29 @@ function Dashboard() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="07XXXXXXXX or 2547XXXXXXXX"
-                    disabled={paying}
+                    disabled={payPhase === "sending"}
                     className="w-full h-11 px-3 rounded-lg border-2 bg-transparent text-sm focus:outline-none"
                     style={{ borderColor: "var(--brand)" }}
                   />
                 </label>
-                {payErr && <p className="text-sm text-destructive">{payErr}</p>}
+                {payErr && (
+                  <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+                    {payErr}
+                  </div>
+                )}
                 <button
                   type="submit"
-                  disabled={paying}
+                  disabled={payPhase === "sending"}
                   className="w-full h-12 rounded-full font-semibold shadow disabled:opacity-70 flex items-center justify-center gap-2"
                   style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
                 >
-                  {paying ? (
+                  {payPhase === "sending" ? (
                     <>
                       <span className="inline-block w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
                       Sending STK push...
                     </>
+                  ) : payPhase === "error" ? (
+                    <>Retry · ${ACTIVATION_FEE.toFixed(2)}</>
                   ) : (
                     <>Activate via M-Pesa · ${ACTIVATION_FEE.toFixed(2)}</>
                   )}
@@ -501,6 +531,7 @@ function Dashboard() {
                 </p>
               </form>
             )}
+
           </div>
         </div>
       )}
