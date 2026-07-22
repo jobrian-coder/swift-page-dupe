@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AuthGate } from "@/components/AuthGate";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { initiateActivationPayment, getPaymentStatus } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -119,19 +121,48 @@ function Dashboard() {
     setPayErr(null);
   };
 
+  const initiatePay = useServerFn(initiateActivationPayment);
+  const checkStatus = useServerFn(getPaymentStatus);
+  const pollRef = useRef<number | null>(null);
+
+  useEffect(() => () => { if (pollRef.current) window.clearInterval(pollRef.current); }, []);
+
   const submitPay = async (e: React.FormEvent) => {
     e.preventDefault();
     setPayErr(null);
     const p = phone.trim();
-    if (!/^(07\d{8}|2547\d{8})$/.test(p)) {
+    if (!/^(?:0[71]\d{8}|254[71]\d{8})$/.test(p.replace(/\s/g, ""))) {
       setPayErr("Enter a valid M-Pesa number (07XXXXXXXX or 2547XXXXXXXX).");
       return;
     }
     setPaying(true);
-    setTimeout(() => {
+    try {
+      const { checkout_id } = await initiatePay({ data: { phone: p } });
+      // Poll for callback result
+      const started = Date.now();
+      pollRef.current = window.setInterval(async () => {
+        try {
+          const s = await checkStatus({ data: { checkout_id } });
+          if (s.status === "payment.success") {
+            if (pollRef.current) window.clearInterval(pollRef.current);
+            setPaying(false);
+            setPaid(true);
+            qc.invalidateQueries({ queryKey: ["profile"] });
+          } else if (s.status === "payment.failed") {
+            if (pollRef.current) window.clearInterval(pollRef.current);
+            setPaying(false);
+            setPayErr("Payment failed or was cancelled. Please try again.");
+          } else if (Date.now() - started > 120000) {
+            if (pollRef.current) window.clearInterval(pollRef.current);
+            setPaying(false);
+            setPayErr("Timed out waiting for M-Pesa confirmation.");
+          }
+        } catch { /* keep polling */ }
+      }, 3000);
+    } catch (err: any) {
       setPaying(false);
-      setPaid(true);
-    }, 2500);
+      setPayErr(err?.message || "Failed to send STK push.");
+    }
   };
 
 

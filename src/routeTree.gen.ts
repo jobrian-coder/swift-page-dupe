@@ -17,6 +17,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CompaniesRouteImport } from './routes/companies'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ReviewIdRouteImport } from './routes/review.$id'
+import { Route as ApiPublicLipwaCallbackRouteImport } from './routes/api/public/lipwa-callback'
 
 const WalletRoute = WalletRouteImport.update({
   id: '/wallet',
@@ -58,6 +59,11 @@ const ReviewIdRoute = ReviewIdRouteImport.update({
   path: '/review/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicLipwaCallbackRoute = ApiPublicLipwaCallbackRouteImport.update({
+  id: '/api/public/lipwa-callback',
+  path: '/api/public/lipwa-callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ReviewsRoute
   '/wallet': typeof WalletRoute
   '/review/$id': typeof ReviewIdRoute
+  '/api/public/lipwa-callback': typeof ApiPublicLipwaCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsRoute
   '/wallet': typeof WalletRoute
   '/review/$id': typeof ReviewIdRoute
+  '/api/public/lipwa-callback': typeof ApiPublicLipwaCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/reviews': typeof ReviewsRoute
   '/wallet': typeof WalletRoute
   '/review/$id': typeof ReviewIdRoute
+  '/api/public/lipwa-callback': typeof ApiPublicLipwaCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/wallet'
     | '/review/$id'
+    | '/api/public/lipwa-callback'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/wallet'
     | '/review/$id'
+    | '/api/public/lipwa-callback'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/wallet'
     | '/review/$id'
+    | '/api/public/lipwa-callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   ReviewsRoute: typeof ReviewsRoute
   WalletRoute: typeof WalletRoute
   ReviewIdRoute: typeof ReviewIdRoute
+  ApiPublicLipwaCallbackRoute: typeof ApiPublicLipwaCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReviewIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/lipwa-callback': {
+      id: '/api/public/lipwa-callback'
+      path: '/api/public/lipwa-callback'
+      fullPath: '/api/public/lipwa-callback'
+      preLoaderRoute: typeof ApiPublicLipwaCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewsRoute: ReviewsRoute,
   WalletRoute: WalletRoute,
   ReviewIdRoute: ReviewIdRoute,
+  ApiPublicLipwaCallbackRoute: ApiPublicLipwaCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
