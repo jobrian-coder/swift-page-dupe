@@ -39,9 +39,10 @@ function Dashboard() {
   const [done, setDone] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
   const [phone, setPhone] = useState("");
-  const [paying, setPaying] = useState(false);
+  const [payPhase, setPayPhase] = useState<"idle" | "sending" | "waiting" | "confirming" | "success" | "error">("idle");
   const [payErr, setPayErr] = useState<string | null>(null);
-  const [paid, setPaid] = useState(false);
+  const [waitedSec, setWaitedSec] = useState(0);
+
 
   const { data: profile } = useQuery({
     queryKey: ["profile"],
