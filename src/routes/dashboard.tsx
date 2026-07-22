@@ -340,10 +340,68 @@ function Dashboard() {
                   className="rounded-xl p-3 text-sm text-center font-semibold"
                   style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
                 >
-                  All checks passed — review access active
+                  All checks passed — one-time activation fee required
                 </div>
                 <button
-                  onClick={closeModal}
+                  onClick={openPay}
+                  className="w-full h-11 rounded-full font-semibold shadow"
+                  style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
+                >
+                  Continue to activation · ${ACTIVATION_FEE.toFixed(2)}
+                </button>
+              </div>
+            ) : (
+              <div className="text-xs text-muted-foreground text-center mt-4">
+                This usually takes 10–20 seconds. Do not refresh.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {payOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
+          <div
+            className="rounded-3xl p-6 max-w-md w-full shadow-2xl relative"
+            style={{ background: "var(--card)" }}
+          >
+            <button
+              onClick={closePay}
+              aria-label="Close"
+              className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted"
+            >
+              ✕
+            </button>
+
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl mb-3"
+              style={{ background: "var(--card-warm)" }}
+            >
+              🔒
+            </div>
+            <h3 className="text-2xl font-bold">Activate review</h3>
+            <p className="text-sm text-muted-foreground mb-5">
+              Activate reviews for{" "}
+              <span className="font-bold" style={{ color: "var(--brand)" }}>
+                ${ACTIVATION_FEE.toFixed(2)}
+              </span>
+              .
+            </p>
+
+            {paid ? (
+              <div className="space-y-4">
+                <div
+                  className="rounded-xl p-4 text-center"
+                  style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
+                >
+                  <div className="text-3xl mb-1">✓</div>
+                  <div className="font-bold">Payment received</div>
+                  <div className="text-xs opacity-90">
+                    Your reviews are now active. Pick a company below.
+                  </div>
+                </div>
+                <button
+                  onClick={closePay}
                   className="w-full h-11 rounded-full font-semibold shadow"
                   style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
                 >
@@ -351,9 +409,40 @@ function Dashboard() {
                 </button>
               </div>
             ) : (
-              <div className="text-xs text-muted-foreground text-center mt-4">
-                This usually takes 10–20 seconds. Do not refresh.
-              </div>
+              <form onSubmit={submitPay} className="space-y-3">
+                <label className="block">
+                  <span className="text-sm font-semibold block mb-1.5">
+                    M-Pesa phone number
+                  </span>
+                  <input
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="07XXXXXXXX or 2547XXXXXXXX"
+                    disabled={paying}
+                    className="w-full h-11 px-3 rounded-lg border-2 bg-transparent text-sm focus:outline-none"
+                    style={{ borderColor: "var(--brand)" }}
+                  />
+                </label>
+                {payErr && <p className="text-sm text-destructive">{payErr}</p>}
+                <button
+                  type="submit"
+                  disabled={paying}
+                  className="w-full h-12 rounded-full font-semibold shadow disabled:opacity-70 flex items-center justify-center gap-2"
+                  style={{ background: "var(--brand)", color: "var(--brand-foreground)" }}
+                >
+                  {paying ? (
+                    <>
+                      <span className="inline-block w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                      Sending STK push...
+                    </>
+                  ) : (
+                    <>Activate via M-Pesa · ${ACTIVATION_FEE.toFixed(2)}</>
+                  )}
+                </button>
+                <p className="text-xs text-muted-foreground text-center">
+                  You'll receive an M-Pesa prompt on your phone. Enter your PIN to confirm.
+                </p>
+              </form>
             )}
           </div>
         </div>
