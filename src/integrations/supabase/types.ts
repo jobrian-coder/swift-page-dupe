@@ -14,7 +14,140 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      companies: {
+        Row: {
+          color: string
+          emoji: string
+          id: string
+          industry: string
+          location: string
+          name: string
+          payout: number
+          taken_spots: number
+          total_spots: number
+        }
+        Insert: {
+          color?: string
+          emoji?: string
+          id?: string
+          industry: string
+          location: string
+          name: string
+          payout: number
+          taken_spots?: number
+          total_spots?: number
+        }
+        Update: {
+          color?: string
+          emoji?: string
+          id?: string
+          industry?: string
+          location?: string
+          name?: string
+          payout?: number
+          taken_spots?: number
+          total_spots?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          balance: number
+          created_at: string
+          earned: number
+          email: string | null
+          id: string
+          reviews_active: boolean
+          username: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          earned?: number
+          email?: string | null
+          id: string
+          reviews_active?: boolean
+          username: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          earned?: number
+          email?: string | null
+          id?: string
+          reviews_active?: boolean
+          username?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          rating: number
+          reward: number
+          text: string
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          reward: number
+          text: string
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          reward?: number
+          text?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      withdrawals: {
+        Row: {
+          amount: number
+          created_at: string
+          destination: string
+          id: string
+          method: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          destination: string
+          id?: string
+          method: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          destination?: string
+          id?: string
+          method?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
