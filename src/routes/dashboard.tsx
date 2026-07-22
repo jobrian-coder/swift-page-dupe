@@ -7,6 +7,9 @@ import { useServerFn } from "@tanstack/react-start";
 import { initiateActivationPayment, getPaymentStatus } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/dashboard")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    activate: s.activate === 1 || s.activate === "1" ? 1 : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Dashboard — RatePay" },
@@ -21,6 +24,7 @@ export const Route = createFileRoute("/dashboard")({
     </AuthGate>
   ),
 });
+
 
 const ACTIVATION_STEPS = [
   { icon: "📍", label: "Verifying location", detail: "Matching your region to available companies" },
