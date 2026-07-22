@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { companyLogoUrl } from "@/lib/companyDomains";
 
 export const Route = createFileRoute("/companies")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Companies — RatePay" },
