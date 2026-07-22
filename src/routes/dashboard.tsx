@@ -261,7 +261,7 @@ function Dashboard() {
           value={`$${balance.toFixed(2)}`}
           sub={`$${balance.toFixed(2)} to $20`}
         />
-        <StatCard label="Earned" value={`$${earned.toFixed(2)}`} />
+        <StatCard label="Received" value={`$${earned.toFixed(2)}`} />
         <StatCard label="Reviews" value={String(reviewCount ?? 0)} />
         <StatCard label="Open" value={String(openCount ?? 0)} />
       </div>
@@ -271,7 +271,7 @@ function Dashboard() {
           <div>
             <h2 className="text-xl font-bold">Start reviewing</h2>
             <p className="text-sm text-muted-foreground">
-              {openCount ?? 0} companies · tap one to earn
+              {openCount ?? 0} companies · tap one to get paid
             </p>
           </div>
           <Link
