@@ -11,9 +11,9 @@ export const Route = createFileRoute("/companies")({
   head: () => ({
     meta: [
       { title: "Companies — ReviewSasa" },
-      { name: "description", content: "Browse US companies and get paid a fixed reward per review." },
+      { name: "description", content: "Browse US companies and get a fixed reward per review." },
       { property: "og:title", content: "Companies — ReviewSasa" },
-      { property: "og:description", content: "Browse US companies and get paid a fixed reward per review." },
+      { property: "og:description", content: "Browse US companies and get a fixed reward per review." },
     ],
   }),
   component: () => (
@@ -87,7 +87,7 @@ function Companies() {
         </div>
         <h1 className="text-4xl md:text-5xl font-extrabold mt-2 tracking-tight">Find a company to review</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl">
-          Get paid a fixed reward per company instantly. Each company accepts up to 200 reviews.
+          Get a fixed reward per company instantly. Each company accepts up to 200 reviews.
         </p>
       </div>
 
@@ -148,7 +148,7 @@ function Companies() {
                         color: "var(--brand)",
                       }}
                     >
-                      Pays ${Number(c.payout).toFixed(2)}
+                      Reward ${Number(c.payout).toFixed(2)}
                     </span>
                   </div>
                   <div className="text-sm text-muted-foreground mt-0.5">

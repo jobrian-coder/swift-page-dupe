@@ -77,16 +77,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ReviewSasa — Get paid for company reviews" },
-      { name: "description", content: "ReviewSasa pays you instantly for honest reviews of US companies. Activate once, review, and cash out via M-Pesa from $20." },
+      { title: "ReviewSasa — Get rewarded for company reviews" },
+      { name: "description", content: "ReviewSasa rewards you instantly for honest reviews of US companies. Activate once, review, and cash out via M-Pesa from $20." },
       { name: "author", content: "ReviewSasa" },
-      { property: "og:title", content: "ReviewSasa — Get paid for company reviews" },
-      { property: "og:description", content: "Get paid a fixed reward for every company review. Fast activation, instant M-Pesa payouts from $20." },
+      { property: "og:title", content: "ReviewSasa — Get rewarded for company reviews" },
+      { property: "og:description", content: "Get a fixed reward for every company review. Fast activation, instant M-Pesa payouts from $20." },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "ReviewSasa" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "ReviewSasa — Get paid for company reviews" },
-      { name: "twitter:description", content: "Get paid a fixed reward for every company review. Fast activation, instant M-Pesa payouts from $20." },
+      { name: "twitter:title", content: "ReviewSasa — Get rewarded for company reviews" },
+      { name: "twitter:description", content: "Get a fixed reward for every company review. Fast activation, instant M-Pesa payouts from $20." },
     ],
     links: [
       {

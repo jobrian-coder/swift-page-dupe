@@ -7,9 +7,9 @@ export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
       { title: "Create account — ReviewSasa" },
-      { name: "description", content: "Join ReviewSasa and get paid for company reviews." },
+      { name: "description", content: "Join ReviewSasa and get rewarded for company reviews." },
       { property: "og:title", content: "Create account — ReviewSasa" },
-      { property: "og:description", content: "Join ReviewSasa and get paid for company reviews." },
+      { property: "og:description", content: "Join ReviewSasa and get rewarded for company reviews." },
     ],
   }),
   component: RegisterPage,
@@ -50,7 +50,7 @@ function RegisterPage() {
   };
 
   return (
-    <AuthShell title="Create account" subtitle="Join and get paid for company reviews">
+    <AuthShell title="Create account" subtitle="Join and get rewarded for company reviews">
       <form onSubmit={submit}>
         <Field label="Username" placeholder="Choose a username" value={username} onChange={(e) => setUsername(e.target.value)} required minLength={3} />
         <Field label="Email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
