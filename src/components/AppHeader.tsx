@@ -62,17 +62,19 @@ export function AppHeader() {
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
               Balance
             </span>
-            <span className="font-bold" style={{ color: "var(--brand)" }}>
+            <span className="font-bold" style={{ color: "#16a34a" }}>
               ${Number(profile?.balance ?? 0).toFixed(2)}
             </span>
           </div>
           <span className="hidden sm:inline font-medium">{profile?.username}</span>
           <button
             onClick={signOut}
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="font-semibold transition-colors hover:opacity-80"
+            style={{ color: "#16a34a" }}
           >
             Log out
           </button>
+
         </div>
       </div>
       <div className="md:hidden border-t px-4 py-2 flex gap-1 overflow-x-auto text-sm">
